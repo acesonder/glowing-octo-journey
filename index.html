@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winter Road Trip Planner - Canada</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Welcome Carousel Screen -->
+    <div id="welcome-screen" class="screen active">
+        <div class="carousel-container">
+            <!-- Slide 1: Welcome -->
+            <div class="carousel-slide active" data-slide="1">
+                <div class="slide-content">
+                    <div class="slide-image winter-scene"></div>
+                    <h1>Plan Safe Winter Road Trips Across Canada</h1>
+                    <p class="tagline">Get there on time, every time.</p>
+                    <button class="btn btn-primary" onclick="nextSlide()">Let's Go</button>
+                    <button class="btn btn-link" onclick="skipCarousel()">Skip</button>
+                </div>
+            </div>
+
+            <!-- Slide 2: Real-time Conditions -->
+            <div class="carousel-slide" data-slide="2">
+                <div class="slide-content">
+                    <div class="slide-icon">
+                        <i class="fas fa-snowflake fa-4x"></i>
+                    </div>
+                    <h2>Real-Time Winter Road Conditions & Alerts</h2>
+                    <p>Stay informed about snow, ice, closures, and weather updates along your route.</p>
+                    <button class="btn btn-primary" onclick="nextSlide()">Next</button>
+                    <button class="btn btn-link" onclick="skipCarousel()">Skip</button>
+                </div>
+            </div>
+
+            <!-- Slide 3: Multi-day Routes -->
+            <div class="carousel-slide" data-slide="3">
+                <div class="slide-content">
+                    <div class="slide-icon">
+                        <i class="fas fa-route fa-4x"></i>
+                    </div>
+                    <h2>Multi-Day Routes with Safe Overnight Stops</h2>
+                    <p>Plan your journey with optimized daily drives, gas stops, and comfortable overnight stays.</p>
+                    <button class="btn btn-primary" onclick="nextSlide()">Next</button>
+                    <button class="btn btn-link" onclick="skipCarousel()">Skip</button>
+                </div>
+            </div>
+
+            <!-- Slide 4: Safety First -->
+            <div class="carousel-slide" data-slide="4">
+                <div class="slide-content">
+                    <div class="slide-icon">
+                        <i class="fas fa-shield-alt fa-4x"></i>
+                    </div>
+                    <h2>Winter Safety Checklist</h2>
+                    <p>Comprehensive vehicle and supply checklist to ensure you're prepared for winter conditions.</p>
+                    <button class="btn btn-primary" onclick="nextSlide()">Next</button>
+                    <button class="btn btn-link" onclick="skipCarousel()">Skip</button>
+                </div>
+            </div>
+
+            <!-- Slide 5: Setup -->
+            <div class="carousel-slide" data-slide="5">
+                <div class="slide-content setup-slide">
+                    <h2>Quick Setup</h2>
+                    <p>Let's gather some basic information for your trip</p>
+                    <button class="btn btn-primary" onclick="showSetup()">Start Planning</button>
+                </div>
+            </div>
+
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators">
+                <span class="indicator active" data-slide="1"></span>
+                <span class="indicator" data-slide="2"></span>
+                <span class="indicator" data-slide="3"></span>
+                <span class="indicator" data-slide="4"></span>
+                <span class="indicator" data-slide="5"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Setup Screen -->
+    <div id="setup-screen" class="screen">
+        <div class="container">
+            <h2>Trip Setup</h2>
+            <p class="subtitle">Tell us about your journey</p>
+
+            <form id="setup-form">
+                <div class="form-group">
+                    <label for="start-location">Starting Point</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" id="start-location" placeholder="e.g., Toronto, ON" required>
+                        <button type="button" class="btn-icon" onclick="detectLocation()" title="Detect my location">
+                            <i class="fas fa-location-crosshairs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="destination">Destination</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-flag-checkered"></i>
+                        <input type="text" id="destination" value="201 Park Av Melfort, SK S0E 1A0" readonly>
+                    </div>
+                    <small class="form-hint">Fixed destination for this trip</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="departure-date">Departure Date</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar"></i>
+                        <input type="date" id="departure-date" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Vehicle</label>
+                    <div class="vehicle-info">
+                        <i class="fas fa-car"></i>
+                        <div>
+                            <strong>2019 Buick Encore</strong>
+                            <span class="license-plate">License: daTy 9990</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Drivers</label>
+                    <div class="drivers-info">
+                        <div class="driver-card">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Chance</span>
+                        </div>
+                        <div class="driver-card">
+                            <i class="fas fa-user-circle"></i>
+                            <span>London</span>
+                        </div>
+                    </div>
+                    <small class="form-hint">Both drivers will be available for the trip</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Create Trip</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard-screen" class="screen">
+        <!-- Header with Driver Switcher -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1>Winter Road Trip</h1>
+                <div class="driver-switcher">
+                    <button class="driver-switch-btn active" data-driver="1" onclick="switchDriver(1)">
+                        <i class="fas fa-user-circle"></i>
+                        <div class="driver-info">
+                            <span class="driver-name">Chance</span>
+                            <span class="driver-km">0 km</span>
+                        </div>
+                    </button>
+                    <button class="driver-switch-btn" data-driver="2" onclick="switchDriver(2)">
+                        <i class="fas fa-user-circle"></i>
+                        <div class="driver-info">
+                            <span class="driver-name">London</span>
+                            <span class="driver-km">0 km</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview')">
+                <i class="fas fa-home"></i>
+                <span>Overview</span>
+            </button>
+            <button class="tab-btn" data-tab="route" onclick="switchTab('route')">
+                <i class="fas fa-map"></i>
+                <span>Route</span>
+            </button>
+            <button class="tab-btn" data-tab="weather" onclick="switchTab('weather')">
+                <i class="fas fa-cloud-sun"></i>
+                <span>Weather</span>
+            </button>
+            <button class="tab-btn" data-tab="safety" onclick="switchTab('safety')">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Safety</span>
+            </button>
+            <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">
+                <i class="fas fa-sticky-note"></i>
+                <span>Notes</span>
+            </button>
+        </nav>
+
+        <!-- Tab Content Container -->
+        <div class="tab-content-container">
+            <!-- Overview Tab -->
+            <div id="overview-tab" class="tab-content active">
+                <div class="container">
+                    <div class="trip-summary card">
+                        <h3>Trip Summary</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <span class="label">Start</span>
+                                    <span class="value" id="summary-start">-</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-flag-checkered"></i>
+                                <div>
+                                    <span class="label">Destination</span>
+                                    <span class="value">Melfort, SK</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-road"></i>
+                                <div>
+                                    <span class="label">Distance</span>
+                                    <span class="value" id="summary-distance">~2,800 km</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <span class="label">Est. Duration</span>
+                                    <span class="value" id="summary-duration">3-4 days</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions card">
+                        <h3>Quick Actions</h3>
+                        <div class="action-buttons">
+                            <button class="action-btn" onclick="switchTab('route')">
+                                <i class="fas fa-map"></i>
+                                <span>View Route</span>
+                            </button>
+                            <button class="action-btn" onclick="switchTab('weather')">
+                                <i class="fas fa-cloud-sun"></i>
+                                <span>Check Weather</span>
+                            </button>
+                            <button class="action-btn" onclick="switchTab('safety')">
+                                <i class="fas fa-clipboard-check"></i>
+                                <span>Safety Checklist</span>
+                            </button>
+                            <button class="action-btn" onclick="addQuickNote()">
+                                <i class="fas fa-plus"></i>
+                                <span>Add Note</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="vehicle-status card">
+                        <h3>Vehicle Information</h3>
+                        <div class="vehicle-details">
+                            <i class="fas fa-car fa-3x"></i>
+                            <div class="details">
+                                <p><strong>2019 Buick Encore</strong></p>
+                                <p>License Plate: <span class="badge">daTy 9990</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Route Tab -->
+            <div id="route-tab" class="tab-content">
+                <div class="container">
+                    <div class="card">
+                        <h3>Route Planning</h3>
+                        <div class="route-info">
+                            <p class="info-text">
+                                <i class="fas fa-info-circle"></i>
+                                Your route will follow the Trans-Canada Highway through Northern Ontario and the Prairies.
+                            </p>
+                        </div>
+
+                        <div class="route-days">
+                            <h4>Suggested Multi-Day Itinerary</h4>
+                            
+                            <div class="day-card">
+                                <div class="day-header">
+                                    <h5><i class="fas fa-calendar-day"></i> Day 1</h5>
+                                    <span class="day-distance">~800 km, 8-9 hours</span>
+                                </div>
+                                <div class="day-content">
+                                    <div class="waypoint">
+                                        <i class="fas fa-circle start"></i>
+                                        <span id="route-start-day1">Starting Point</span>
+                                    </div>
+                                    <div class="waypoint">
+                                        <i class="fas fa-gas-pump"></i>
+                                        <span>Gas Stop: Sault Ste. Marie, ON</span>
+                                    </div>
+                                    <div class="waypoint">
+                                        <i class="fas fa-hotel"></i>
+                                        <span>Overnight: Thunder Bay, ON</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="day-card">
+                                <div class="day-header">
+                                    <h5><i class="fas fa-calendar-day"></i> Day 2</h5>
+                                    <span class="day-distance">~900 km, 9-10 hours</span>
+                                </div>
+                                <div class="day-content">
+                                    <div class="waypoint">
+                                        <i class="fas fa-circle"></i>
+                                        <span>Thunder Bay, ON</span>
+                                    </div>
+                                    <div class="waypoint">
+                                        <i class="fas fa-gas-pump"></i>
+                                        <span>Gas Stop: Kenora, ON</span>
+                                    </div>
+                                    <div class="waypoint">
+                                        <i class="fas fa-coffee"></i>
+                                        <span>Rest Stop: Brandon, MB</span>
+                                    </div>
+                                    <div class="waypoint">
+                                        <i class="fas fa-hotel"></i>
+                                        <span>Overnight: Winnipeg, MB</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="day-card">
+                                <div class="day-header">
+                                    <h5><i class="fas fa-calendar-day"></i> Day 3</h5>
+                                    <span class="day-distance">~800 km, 8 hours</span>
+                                </div>
+                                <div class="day-content">
+                                    <div class="waypoint">
+                                        <i class="fas fa-circle"></i>
+                                        <span>Winnipeg, MB</span>
+                                    </div>
+                                    <div class="waypoint">
+                                        <i class="fas fa-gas-pump"></i>
+                                        <span>Gas Stop: Yorkton, SK</span>
+                                    </div>
+                                    <div class="waypoint">
+                                        <i class="fas fa-hotel"></i>
+                                        <span>Overnight: Saskatoon, SK</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="day-card">
+                                <div class="day-header">
+                                    <h5><i class="fas fa-calendar-day"></i> Day 4</h5>
+                                    <span class="day-distance">~300 km, 3-4 hours</span>
+                                </div>
+                                <div class="day-content">
+                                    <div class="waypoint">
+                                        <i class="fas fa-circle"></i>
+                                        <span>Saskatoon, SK</span>
+                                    </div>
+                                    <div class="waypoint">
+                                        <i class="fas fa-flag-checkered destination"></i>
+                                        <span><strong>Melfort, SK - 201 Park Av</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stops-section">
+                            <h4>Add Custom Stop</h4>
+                            <form id="add-stop-form" class="inline-form">
+                                <input type="text" id="stop-location" placeholder="Location name" required>
+                                <select id="stop-type" required>
+                                    <option value="">Type</option>
+                                    <option value="gas">Gas Station</option>
+                                    <option value="food">Food/Restaurant</option>
+                                    <option value="rest">Rest Stop</option>
+                                    <option value="overnight">Overnight Stay</option>
+                                    <option value="scenic">Scenic Stop</option>
+                                </select>
+                                <input type="number" id="stop-day" placeholder="Day #" min="1" max="5" required>
+                                <button type="submit" class="btn btn-secondary">Add Stop</button>
+                            </form>
+                            <div id="custom-stops-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Tab -->
+            <div id="weather-tab" class="tab-content">
+                <div class="container">
+                    <div class="card">
+                        <h3>Weather & Road Conditions</h3>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Monitor weather conditions along your route before and during your journey. Winter conditions can change rapidly.</p>
+                        </div>
+
+                        <div class="weather-locations">
+                            <h4>Key Route Locations</h4>
+                            
+                            <div class="weather-card">
+                                <div class="location-header">
+                                    <h5>Thunder Bay, ON</h5>
+                                    <span class="weather-icon"><i class="fas fa-snowflake"></i></span>
+                                </div>
+                                <div class="weather-details">
+                                    <div class="weather-item">
+                                        <span class="label">Temperature:</span>
+                                        <span class="value">-12°C</span>
+                                    </div>
+                                    <div class="weather-item">
+                                        <span class="label">Conditions:</span>
+                                        <span class="value">Light Snow</span>
+                                    </div>
+                                    <div class="weather-item">
+                                        <span class="label">Road Status:</span>
+                                        <span class="badge badge-warning">Snow Covered</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="weather-card">
+                                <div class="location-header">
+                                    <h5>Winnipeg, MB</h5>
+                                    <span class="weather-icon"><i class="fas fa-cloud"></i></span>
+                                </div>
+                                <div class="weather-details">
+                                    <div class="weather-item">
+                                        <span class="label">Temperature:</span>
+                                        <span class="value">-18°C</span>
+                                    </div>
+                                    <div class="weather-item">
+                                        <span class="label">Conditions:</span>
+                                        <span class="value">Cloudy</span>
+                                    </div>
+                                    <div class="weather-item">
+                                        <span class="label">Road Status:</span>
+                                        <span class="badge badge-success">Clear</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="weather-card">
+                                <div class="location-header">
+                                    <h5>Saskatoon, SK</h5>
+                                    <span class="weather-icon"><i class="fas fa-wind"></i></span>
+                                </div>
+                                <div class="weather-details">
+                                    <div class="weather-item">
+                                        <span class="label">Temperature:</span>
+                                        <span class="value">-15°C</span>
+                                    </div>
+                                    <div class="weather-item">
+                                        <span class="label">Conditions:</span>
+                                        <span class="value">Windy</span>
+                                    </div>
+                                    <div class="weather-item">
+                                        <span class="label">Road Status:</span>
+                                        <span class="badge badge-warning">Icy Patches</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="weather-card">
+                                <div class="location-header">
+                                    <h5>Melfort, SK</h5>
+                                    <span class="weather-icon"><i class="fas fa-sun"></i></span>
+                                </div>
+                                <div class="weather-details">
+                                    <div class="weather-item">
+                                        <span class="label">Temperature:</span>
+                                        <span class="value">-10°C</span>
+                                    </div>
+                                    <div class="weather-item">
+                                        <span class="label">Conditions:</span>
+                                        <span class="value">Partly Cloudy</span>
+                                    </div>
+                                    <div class="weather-item">
+                                        <span class="label">Road Status:</span>
+                                        <span class="badge badge-success">Good</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="weather-alerts">
+                            <h4>Active Alerts</h4>
+                            <div id="alerts-list">
+                                <p class="no-alerts"><i class="fas fa-check-circle"></i> No active weather alerts for your route</p>
+                            </div>
+                        </div>
+
+                        <div class="road-resources">
+                            <h4>Road Condition Resources</h4>
+                            <div class="resource-links">
+                                <a href="#" class="resource-link" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Ontario 511 Road Conditions
+                                </a>
+                                <a href="#" class="resource-link" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Manitoba Highway Conditions
+                                </a>
+                                <a href="#" class="resource-link" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Saskatchewan Highway Hotline
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Safety Tab -->
+            <div id="safety-tab" class="tab-content">
+                <div class="container">
+                    <div class="card">
+                        <h3>Winter Safety Checklist</h3>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Complete this checklist before your trip. Winter driving requires proper preparation.</p>
+                        </div>
+
+                        <div class="checklist-section">
+                            <h4><i class="fas fa-car"></i> Vehicle</h4>
+                            <div id="vehicle-checklist" class="checklist-items">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="checklist-section">
+                            <h4><i class="fas fa-box"></i> Supplies</h4>
+                            <div id="supplies-checklist" class="checklist-items">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="checklist-section">
+                            <h4><i class="fas fa-file-alt"></i> Documents</h4>
+                            <div id="documents-checklist" class="checklist-items">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="checklist-section">
+                            <h4><i class="fas fa-tshirt"></i> Clothing</h4>
+                            <div id="clothing-checklist" class="checklist-items">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="emergency-contacts">
+                            <h4>Emergency Contacts</h4>
+                            <div class="contact-list">
+                                <div class="contact-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span><strong>Emergency Services:</strong> 911</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span><strong>Roadside Assistance:</strong> 1-800-CAA-HELP</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span><strong>Ontario OPP:</strong> *OPP (*677)</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span><strong>Manitoba RCMP:</strong> 204-726-7525</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span><strong>Saskatchewan RCMP:</strong> 310-RCMP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Tab -->
+            <div id="notes-tab" class="tab-content">
+                <div class="container">
+                    <div class="card">
+                        <h3>Trip Notes</h3>
+                        
+                        <div class="add-note-section">
+                            <form id="add-note-form">
+                                <div class="form-group">
+                                    <textarea id="note-text" placeholder="Add a note (e.g., Call Mom with ETA, Favorite snacks, etc.)" rows="3" required></textarea>
+                                </div>
+                                <div class="form-row">
+                                    <select id="note-category">
+                                        <option value="general">General</option>
+                                        <option value="reminder">Reminder</option>
+                                        <option value="emergency">Emergency</option>
+                                        <option value="contact">Contact</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary">Add Note</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="notes-list" id="notes-list">
+                            <p class="no-notes">No notes yet. Add your first note above!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+</body>
+</html>
