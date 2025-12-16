@@ -1,0 +1,14 @@
+# Jekyll configuration for GitHub Pages
+# This file ensures proper deployment
+
+# Theme
+theme: jekyll-theme-minimal
+
+# Basic settings
+title: Winter Road Trip Planner
+description: Plan safe winter road trips across Canada
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - FUTURE_UPGRADES.md

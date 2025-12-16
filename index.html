@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winter Road Trip Planner - Safe Travel Across Canada</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- User Profile Switcher -->
+    <div class="user-profile-bar" id="userProfileBar" style="display: none;">
+        <div class="container">
+            <div class="profile-switcher">
+                <button class="profile-icon" id="profileButton">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="16" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+                        <path d="M6 26c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    <span id="currentDriverName">Chance</span>
+                </button>
+                <div class="driver-stats">
+                    <span class="stat">Distance: <strong id="driverDistance">0 km</strong></span>
+                    <span class="stat">Time: <strong id="driverTime">0h 0m</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Driver Switcher Modal -->
+    <div class="modal" id="driverModal">
+        <div class="modal-content">
+            <h3>Switch Driver</h3>
+            <div class="driver-cards">
+                <div class="driver-card" data-driver="chance">
+                    <div class="driver-icon">C</div>
+                    <h4>Chance</h4>
+                    <p class="driver-stats-detail">
+                        Total Distance: <strong><span class="driver-total-km" data-driver="chance">0</span> km</strong><br>
+                        Total Time: <strong><span class="driver-total-time" data-driver="chance">0h 0m</span></strong>
+                    </p>
+                </div>
+                <div class="driver-card" data-driver="london">
+                    <div class="driver-icon">L</div>
+                    <h4>London</h4>
+                    <p class="driver-stats-detail">
+                        Total Distance: <strong><span class="driver-total-km" data-driver="london">0</span> km</strong><br>
+                        Total Time: <strong><span class="driver-total-time" data-driver="london">0h 0m</span></strong>
+                    </p>
+                </div>
+            </div>
+            <button class="btn-secondary" onclick="closeDriverModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Welcome Carousel -->
+    <div class="carousel-container" id="carouselContainer">
+        <div class="carousel">
+            <!-- Slide 1: Splash -->
+            <div class="carousel-slide active" data-slide="0">
+                <div class="slide-content splash-slide">
+                    <div class="winter-scene"></div>
+                    <h1>Plan Safe Winter Road Trips Across Canada</h1>
+                    <p class="subtitle">Get there on time, every time</p>
+                    <button class="btn-primary" onclick="nextSlide()">Let's Go</button>
+                    <button class="btn-text" onclick="skipCarousel()">Skip Intro</button>
+                </div>
+            </div>
+
+            <!-- Slide 2: Real-time Conditions -->
+            <div class="carousel-slide" data-slide="1">
+                <div class="slide-content feature-slide">
+                    <div class="feature-icon">🌨️</div>
+                    <h2>Real-Time Winter Road Conditions & Alerts</h2>
+                    <p>Stay informed about weather, road closures, and hazards along your route</p>
+                    <button class="btn-primary" onclick="nextSlide()">Next</button>
+                    <button class="btn-text" onclick="skipCarousel()">Skip</button>
+                </div>
+            </div>
+
+            <!-- Slide 3: Multi-day Routes -->
+            <div class="carousel-slide" data-slide="2">
+                <div class="slide-content feature-slide">
+                    <div class="feature-icon">🗺️</div>
+                    <h2>Multi-Day Routes with Safe Overnight Stops</h2>
+                    <p>Plan your journey with optimal rest stops, hotels, and gas stations</p>
+                    <button class="btn-primary" onclick="nextSlide()">Next</button>
+                    <button class="btn-text" onclick="skipCarousel()">Skip</button>
+                </div>
+            </div>
+
+            <!-- Slide 4: Safety First -->
+            <div class="carousel-slide" data-slide="3">
+                <div class="slide-content feature-slide">
+                    <div class="feature-icon">✅</div>
+                    <h2>Winter Safety Checklist</h2>
+                    <p>Essential vehicle prep and emergency kit recommendations</p>
+                    <button class="btn-primary" onclick="startSetup()">Start Planning</button>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <!-- Quick Setup Form -->
+    <div class="setup-container" id="setupContainer" style="display: none;">
+        <div class="container">
+            <h2>Quick Setup - Let's Plan Your Trip</h2>
+            <form id="setupForm" class="setup-form">
+                <div class="form-group">
+                    <label for="startingPoint">Starting Point</label>
+                    <input type="text" id="startingPoint" placeholder="e.g., Toronto, ON" required>
+                    <button type="button" class="btn-text" onclick="detectLocation()">📍 Auto-detect my location</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Destination</label>
+                    <input type="text" value="201 Park Ave, Melfort, SK S0E 1A0" disabled class="readonly-input">
+                    <small>Fixed destination for this trip</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Primary Driver</label>
+                    <div class="driver-select">
+                        <label class="radio-card">
+                            <input type="radio" name="primaryDriver" value="chance" checked>
+                            <span>Chance</span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="primaryDriver" value="london">
+                            <span>London</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Vehicle Information</label>
+                    <input type="text" value="2019 Buick Encore" disabled class="readonly-input">
+                    <input type="text" value="License Plate: DATY 9990" disabled class="readonly-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="departureDate">Departure Date</label>
+                    <input type="date" id="departureDate" required>
+                </div>
+
+                <button type="submit" class="btn-primary btn-large">Create My Trip Plan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard" id="dashboard" style="display: none;">
+        <div class="container">
+            <h1>Your Winter Road Trip</h1>
+            
+            <!-- Trip Overview Card -->
+            <div class="card trip-overview">
+                <h2>Trip Overview</h2>
+                <div class="trip-info-grid">
+                    <div class="info-item">
+                        <span class="label">From:</span>
+                        <span class="value" id="tripStart">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">To:</span>
+                        <span class="value">201 Park Ave, Melfort, SK</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Total Distance:</span>
+                        <span class="value" id="tripDistance">~2,800 km</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Estimated Time:</span>
+                        <span class="value" id="tripDuration">32-36 hours driving</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Departure:</span>
+                        <span class="value" id="tripDepartureDate">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Estimated Arrival:</span>
+                        <span class="value" id="tripArrivalDate">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Route Timeline -->
+            <div class="card">
+                <h2>Multi-Day Route Timeline</h2>
+                <div id="routeTimeline" class="route-timeline"></div>
+            </div>
+
+            <!-- Weather & Road Conditions -->
+            <div class="card">
+                <h2>🌨️ Weather & Road Conditions</h2>
+                <div class="weather-grid" id="weatherGrid">
+                    <div class="weather-alert">
+                        <div class="alert-icon">⚠️</div>
+                        <div>
+                            <strong>Winter Travel Advisory</strong>
+                            <p>Check conditions before each leg of your journey. Visit Ontario 511 and Saskatchewan Highway Hotline for real-time updates.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hotels & Stops -->
+            <div class="card">
+                <h2>🏨 Overnight Stops & Hotels</h2>
+                <div id="hotelsList" class="hotels-list"></div>
+                <button class="btn-secondary" onclick="addHotel()">+ Add Hotel Booking</button>
+            </div>
+
+            <!-- Gas Stations -->
+            <div class="card">
+                <h2>⛽ Gas Stations & Rest Stops</h2>
+                <div id="gasStationsList" class="gas-list"></div>
+                <button class="btn-secondary" onclick="addGasStop()">+ Add Gas Stop</button>
+            </div>
+
+            <!-- Trip Notes -->
+            <div class="card">
+                <h2>📝 Trip Notes</h2>
+                <div id="tripNotes" class="trip-notes"></div>
+                <button class="btn-secondary" onclick="addNote()">+ Add Note</button>
+            </div>
+
+            <!-- Safety Checklist -->
+            <div class="card safety-checklist">
+                <h2>✅ Winter Safety Checklist</h2>
+                <div id="safetyChecklist" class="checklist"></div>
+            </div>
+
+            <!-- Emergency Contacts -->
+            <div class="card">
+                <h2>🚨 Emergency Contacts</h2>
+                <div class="emergency-contacts">
+                    <div class="contact-item">
+                        <strong>Emergency Services:</strong> 911
+                    </div>
+                    <div class="contact-item">
+                        <strong>Ontario Road Conditions:</strong> 511 or 1-800-268-4686
+                    </div>
+                    <div class="contact-item">
+                        <strong>Saskatchewan Highway Hotline:</strong> 1-888-335-7623
+                    </div>
+                    <div class="contact-item">
+                        <strong>CAA Emergency Road Service:</strong> 1-800-222-4357
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
